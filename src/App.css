@@ -1,13 +1,12 @@
 .content {
   text-align: left;
-  color: ghostwhite;
   padding-left: 20px;
   padding-right: 20px;
   padding-top: 20px;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 h2 {
   margin-bottom: 0;
-}
-h5 {
-  margin-top: 5px;
 }

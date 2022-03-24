@@ -7,6 +7,14 @@ import Home from "./pages/Home";
 import NewSong from "./pages/NewSong";
 import ErrorPage from "./pages/ErrorPage";
 
+import "primereact/resources/themes/bootstrap4-dark-blue/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
+
+import PrimeReact from "primereact/api";
+
+PrimeReact.ripple = true;
+
 function App() {
   return (
     <Router>
