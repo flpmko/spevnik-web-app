@@ -1,0 +1,61 @@
+h1 {
+  margin-bottom: 20px;
+}
+.new-song-container {
+  display: block;
+}
+.new-song-line {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}
+input::placeholder,
+textarea::placeholder {
+  font-style: italic;
+}
+textarea {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: silver;
+  border: none;
+  border-radius: 5px;
+}
+input[type="text"],
+select {
+  background-color: silver;
+  border: none;
+  border-radius: 5px;
+  height: 25px;
+}
+.new-song-intermezzo p {
+  color: whitesmoke;
+}
+.new-song-intermezzo div {
+  background-color: whitesmoke;
+  width: 200px;
+  height: 2px;
+}
+.new-song-intermezzo {
+  gap: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
+  padding-bottom: 40px;
+}
+input[type="file"] {
+  cursor: pointer;
+}
+.submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 50px;
+}
+.submit #new-song {
+  margin: 0;
+}

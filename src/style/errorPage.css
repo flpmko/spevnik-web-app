@@ -1,0 +1,76 @@
+h1,
+h3 {
+  color: ghostwhite;
+  margin: 0;
+}
+
+p {
+  color: red;
+  font-size: x-large;
+  margin: 0;
+}
+
+.container a {
+  color: aquamarine;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.main {
+  justify-content: center;
+}
+
+.MainDescription {
+  max-width: 50%;
+  font-size: 1.2rem;
+  font-weight: lighter;
+}
+
+.MainGraphic {
+  position: relative;
+}
+
+.shuttle {
+  width: 5rem;
+  height: 5rem;
+  margin: 10rem;
+  transition: easeInOutQuint();
+  animation: CogAnimation 30s linear infinite;
+}
+
+.astronaut {
+  width: 15rem;
+  height: 15rem;
+  transition: easeInOutQuint();
+  animation: CogAnimation2 25s linear infinite;
+}
+
+.world {
+  width: 10rem;
+  height: 10rem;
+  transition: easeInOutQuint();
+}
+
+@keyframes CogAnimation {
+  0% {
+    transform: rotate(-360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes CogAnimation2 {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}

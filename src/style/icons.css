@@ -1,0 +1,20 @@
+.logo-spevnik {
+  height: 24px;
+  width: 24px;
+  content: url("../images/logo192.png");
+}
+.logo-ruza {
+  content: url("../images/lutherova_ruza.jpg");
+}
+.error {
+  height: 375px;
+  width: 375px;
+  content: url("../images/error.png");
+}
+
+@media screen and (max-width: 768px) {
+  .error {
+    height: 50vw;
+    width: 50vw;
+  }
+}

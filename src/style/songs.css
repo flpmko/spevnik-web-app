@@ -1,0 +1,22 @@
+.container-song-header {
+  display: flex;
+}
+#new-song {
+  margin-left: auto;
+  border-color: none;
+  border: none;
+  border-radius: 5px;
+  border-width: 0;
+  background-color: green;
+  color: whitesmoke;
+  font-size: x-large;
+  font-weight: bold;
+  padding: 10px;
+  text-transform: uppercase;
+  cursor: pointer;
+  width: 200px;
+  transition: 0.5s;
+}
+#new-song:hover {
+  width: 250px;
+}
