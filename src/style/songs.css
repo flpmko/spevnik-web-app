@@ -18,6 +18,24 @@
   padding-top: 5px;
   padding-bottom: 5px;
 }
+.songs-dropdown {
+  display: flex;
+  align-items: center;
+  padding-bottom: 20px;
+}
+.songs-inforow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 15px;
+}
+.songs-button-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 #new-song {
   font-size: x-large;
   font-weight: bold;
