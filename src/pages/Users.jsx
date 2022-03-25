@@ -14,7 +14,7 @@ function App() {
       setUsers(userData.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
     };
     getUsers();
-  }, [usersCollectionRef]);
+  }, []);
 
   return (
     <div>

@@ -18,9 +18,9 @@ PrimeReact.ripple = true;
 function App() {
   return (
     <Router>
-      <Navbar></Navbar>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />}></Route>
+        <Route path="/" element={<Songs />}></Route>
         <Route path="/songs" element={<Songs />}></Route>
         <Route path="/users" element={<Users />}></Route>
         <Route path="/new-song" element={<NewSong />}></Route>

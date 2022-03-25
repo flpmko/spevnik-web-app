@@ -1,25 +1,43 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { getDoc, doc } from "firebase/firestore";
+import { getDoc, doc, arrayRemove, updateDoc } from "firebase/firestore";
 import { Button } from "primereact/button";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { confirmDialog } from "primereact/confirmdialog";
 
 import { db } from "../firebase-config";
 import HymnForm from "../components/forms/HymnForm";
 import SongForm from "../components/forms/SongForm";
+import SongItem from "../components/items/SongItem";
 
 import "../App.css";
 import "../style/songs.css";
 
 function App() {
+  // old data from local storage
+  const oldHymns = JSON.parse(localStorage.getItem("hymns"));
+  const oldSongs = JSON.parse(localStorage.getItem("songs"));
+  // const oldHymns = null;
+  // const oldSongs = null;
+
+  //main vars
+  const [hymns, setHymns] = useState(oldHymns ? oldHymns : []);
+  const [hymn, setHymn] = useState(null);
+  const [songs, setSongs] = useState(oldSongs ? oldSongs : []);
+  const [song, setSong] = useState(null);
+  // const [songs, setSongs] = useState([]);
+  // const [hymns, setHymns] = useState([]);
+
+  // db refs
   const hymnsDocRef = doc(db, "index/hymns");
   const songsDocRef = doc(db, "index/songs");
-  const navigate = useNavigate();
-  const [hymns, setHymns] = useState([]);
-  const [hymn, setHymn] = useState(null);
-  const [songs, setSongs] = useState([]);
-  const [song, setSong] = useState(null);
+
+  // helpers
+  const [loading, setLoading] = useState(false);
+  const [isHymn, setIsHymn] = useState(true);
+  const [query, setQuery] = useState(undefined);
+  const [orderAscending, setOrderAscending] = useState(true);
   const [activeCategory, setActiveCategory] = useState("Spevníkové");
   const categories = [
     { name: "Spevníkové", value: "Spevníkové" },
@@ -29,7 +47,7 @@ function App() {
   ];
 
   const confirm = () => {
-    console.log(categories.at(0).name);
+    let outcome = false;
     confirmDialog({
       message: "Naoazaj chceš vymazať túto pieseň?",
       header: "Potvrdenie",
@@ -38,20 +56,73 @@ function App() {
       icon: "pi pi-exclamation-triangle",
       acceptClassName: "p-button-danger",
       rejectClassName: "p-button-secondary",
-      // accept: () => acceptFunc(),
-      // reject: () => rejectFunc(),
+      accept: () => (outcome = true),
+      reject: () => (outcome = false),
     });
+    console.log(outcome);
+    return outcome;
+  };
+
+  const removeHymn = async (hymn) => {
+    if (hymn) {
+      if (confirm()) {
+        setLoading(true);
+        await updateDoc(hymnsDocRef, {
+          all: arrayRemove({
+            title: hymn.title,
+            number: hymn.number,
+            season: hymn.season,
+            verses: hymn.verses,
+          }),
+        });
+        setLoading(false);
+      }
+    }
+  };
+
+  const resetLocalStorage = () => {
+    localStorage.removeItem("title");
+    localStorage.removeItem("number");
+    localStorage.removeItem("season");
+    localStorage.removeItem("verses");
+  };
+
+  const newSongForm = () => {
+    resetLocalStorage();
+    setHymn(null);
+    setSong(null);
+  };
+
+  const changeCategory = (e) => {
+    setActiveCategory(e.value);
+    if (e.value === "Spevníkové") {
+      setQuery(undefined);
+    } else {
+      setQuery("");
+    }
+    setIsHymn(!isHymn);
+    setHymn(null);
+    setSong(null);
   };
 
   useEffect(() => {
-    const getData = async () => {
-      const hymnsData = await getDoc(hymnsDocRef);
-      setHymns(hymnsData.get("all"));
-      const songsData = await getDoc(songsDocRef);
-      setSongs(songsData.get("all"));
-    };
-    getData();
-  }, [hymnsDocRef, setHymns, songsDocRef, setSongs]);
+    if (!oldHymns) {
+      const getHymnsData = async () => {
+        const hymnsData = await getDoc(hymnsDocRef);
+        setHymns(hymnsData.get("all"));
+        localStorage.setItem("hymns", JSON.stringify(hymnsData.get("all")));
+      };
+      getHymnsData();
+    }
+    if (!oldSongs) {
+      const getSongsData = async () => {
+        const songsData = await getDoc(songsDocRef);
+        setSongs(songsData.get("all"));
+        localStorage.setItem("songs", JSON.stringify(songsData.get("all")));
+      };
+      getSongsData();
+    }
+  }, []);
 
   return (
     <div>
@@ -71,7 +142,7 @@ function App() {
           <Dropdown
             value={activeCategory}
             options={categories}
-            onChange={(e) => setActiveCategory(e.value)}
+            onChange={(e) => changeCategory(e)}
             optionLabel="name"
           />
           <div>
@@ -79,56 +150,98 @@ function App() {
               id="new-song"
               label="nová pieseň"
               className="p-button-success"
-              // onClick={() => navigate("/new-song")}
-              onClick={() => setHymn(null)}
+              onClick={newSongForm}
             ></Button>
           </div>
         </div>
         <div style={{ display: "flex", gap: "20px" }}>
           {activeCategory === categories.at(0).name ? (
-            <HymnForm hymn={hymn} />
+            <HymnForm hymn={hymn} resetLocalStorage={resetLocalStorage} />
           ) : (
-            <SongForm song={song} />
+            <SongForm song={song} resetLocalStorage={resetLocalStorage} />
           )}
           <div
             className="songs-list p-card"
-            style={{ backgroundColor: "GrayText" }}
+            style={{ backgroundColor: "GrayText", minWidth: "450px" }}
           >
-            {hymns.map((hymn) => {
-              return (
-                <div key={hymn.number} className="songs-list-item p-card">
-                  <h2>
-                    {hymn.number} - {hymn.title}
-                  </h2>
-                  <div className="songs-inforow">
-                    <div className="songs-button-container">
-                      <Button
-                        id="new-song"
-                        icon="pi pi-pencil"
-                        className="p-button-warning"
-                        onClick={() => setHymn(hymn)}
-                        style={{
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                          height: "30px",
-                        }}
-                      ></Button>
-                      <Button
-                        id="new-song"
-                        icon="pi pi-minus"
-                        onClick={confirm}
-                        style={{
-                          paddingLeft: "5px",
-                          paddingRight: "5px",
-                          height: "30px",
-                        }}
-                        className="p-button-danger"
-                      ></Button>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
+            {isHymn && (
+              <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
+                <Button
+                  icon={
+                    orderAscending
+                      ? "pi pi-sort-numeric-down"
+                      : "pi pi-sort-numeric-up"
+                  }
+                  className="p-button-primary"
+                  onClick={() => setOrderAscending(!orderAscending)}
+                />
+                <InputNumber
+                  placeholder="číslo piesne"
+                  value={query}
+                  id="number"
+                  onChange={(e) => {
+                    if (e.value === null) setQuery(undefined);
+                    else setQuery(e.value);
+                  }}
+                />
+                <Button icon="pi pi-search" className="p-button-primary" />
+              </div>
+            )}
+            {!isHymn && (
+              <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
+                <Button
+                  icon={
+                    orderAscending
+                      ? "pi pi-sort-alpha-down"
+                      : "pi pi-sort-alpha-up"
+                  }
+                  className="p-button-primary"
+                  onClick={() => setOrderAscending(!orderAscending)}
+                />
+                <InputText
+                  placeholder="názov piesne"
+                  value={query}
+                  id="text"
+                  onChange={(e) => {
+                    if (e.target.value === null) setQuery(undefined);
+                    else setQuery(e.target.value);
+                  }}
+                />
+                <Button icon="pi pi-search" className="p-button-primary" />
+              </div>
+            )}
+            {isHymn &&
+              hymns
+                .filter((searchHymn) =>
+                  searchHymn.number.toString().match(query)
+                )
+                .map((hymn) => {
+                  return (
+                    <SongItem
+                      key={hymn.number}
+                      isHymn={isHymn}
+                      hymn={hymn}
+                      loading={loading}
+                      setHymn={setHymn}
+                      removeHymn={removeHymn}
+                    />
+                  );
+                })}
+            {!isHymn &&
+              songs
+                .filter((searchSong) => searchSong.title.includes(query))
+                .map((song) => {
+                  return (
+                    <SongItem
+                      key={song.title}
+                      isHymn={isHymn}
+                      song={song}
+                      loading={loading}
+                      setSong={setSong}
+                      removeHymn={removeHymn}
+                    />
+                  );
+                })}
           </div>
         </div>
       </div>

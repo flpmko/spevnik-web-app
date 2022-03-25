@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import "./navbar.css";
 import "../../style/icons.css";
 
@@ -19,16 +20,13 @@ const Navbar = () => {
       </div>
       <ul className={active}>
         <li>
-          <a href="/">Home</a>
+          <a href="/songs">Piesne</a>
         </li>
         <li>
-          <a href="/songs">Songs</a>
+          <a href="/users">Používatelia</a>
         </li>
         <li>
-          <a href="/users">Users</a>
-        </li>
-        <li>
-          <a href="/about">About</a>
+          <a href="/about">Info</a>
         </li>
       </ul>
       <div className={burger} onClick={navToggle}>
