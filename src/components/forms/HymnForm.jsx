@@ -1,53 +1,58 @@
-import React, { useEffect, useState } from "react";
-import { InputText } from "primereact/inputtext";
-import { InputNumber } from "primereact/inputnumber";
-import { Dropdown } from "primereact/dropdown";
-import { InputTextarea } from "primereact/inputtextarea";
-import { Button } from "primereact/button";
-import { ProgressSpinner } from "primereact/progressspinner";
+import React, { useEffect, useState } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { InputNumber } from 'primereact/inputnumber';
+import { Dropdown } from 'primereact/dropdown';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Button } from 'primereact/button';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   doc,
   updateDoc,
   serverTimestamp,
   arrayUnion,
   arrayRemove,
-} from "firebase/firestore";
+} from 'firebase/firestore';
 
-import { db } from "../../firebase-config";
+import { db } from '../../firebase-config';
 
-import "../../App.css";
-import "../../style/newSong.css";
+// import '../../App.css';
+import '../../style/newSong.css';
 
 function HymnForm({ hymn, resetLocalStorage }) {
-  const oldTitle = localStorage.getItem("title");
-  const oldNumber = localStorage.getItem("number");
-  const oldSeason = localStorage.getItem("season");
+  // data from local storage
+  const oldTitle = localStorage.getItem('title');
+  const oldNumber = localStorage.getItem('number');
+  const oldSeason = localStorage.getItem('season');
   //   const oldVerses = JSON.parse(localStorage.getItem("verses"));
-  const [title, setTitle] = useState(oldTitle ? oldTitle : "");
-  const [season, setSeason] = useState(oldSeason ? oldSeason : "");
+
+  // main vars
+  const [title, setTitle] = useState(oldTitle ? oldTitle : '');
+  const [season, setSeason] = useState(oldSeason ? oldSeason : '');
   const [number, setNumber] = useState(oldNumber ? oldNumber : null);
-  const [verses, setVerses] = useState([""]);
+  const [verses, setVerses] = useState(['']);
+
+  // helper vars
   const [loading, setLoading] = useState(false);
-  const hymnsRef = doc(db, "index/hymns");
+  const hymnsRef = doc(db, 'index/hymns');
 
   const seasons = [
-    { name: "Advent", value: "Advent" },
-    { name: "Vianoce", value: "Vianoce" },
-    { name: "Pôst", value: "Pôst" },
-    { name: "Veľká noc", value: "Veľká noc" },
-    { name: "Vstúpenie", value: "Vstúpenie" },
-    { name: "Zoslanie", value: "Zoslanie" },
-    { name: "Trojjediný", value: "Trojjediný" },
-    { name: "Cirkev", value: "Cirkev" },
+    { name: 'Advent', value: 'Advent' },
+    { name: 'Vianoce', value: 'Vianoce' },
+    { name: 'Pôst', value: 'Pôst' },
+    { name: 'Veľká noc', value: 'Veľká noc' },
+    { name: 'Vstúpenie', value: 'Vstúpenie' },
+    { name: 'Zoslanie', value: 'Zoslanie' },
+    { name: 'Trojjediný', value: 'Trojjediný' },
+    { name: 'Cirkev', value: 'Cirkev' },
   ];
 
   // handle input change on verses
   const handleInputChange = (e, index) => {
-    const { text, value } = e.target;
+    const { value } = e.target;
     const list = [...verses];
     list[index] = value;
     setVerses(list);
-    localStorage.setItem("verses", JSON.stringify(list));
+    localStorage.setItem('verses', JSON.stringify(list));
   };
 
   // handle click event of the Remove button
@@ -55,13 +60,13 @@ function HymnForm({ hymn, resetLocalStorage }) {
     const list = [...verses];
     list.splice(index, 1);
     setVerses(list);
-    localStorage.setItem("verses", JSON.stringify(list));
+    localStorage.setItem('verses', JSON.stringify(list));
   };
 
   // handle click event of the Add button
   const handleAddClick = () => {
-    setVerses([...verses, [""]]);
-    localStorage.setItem("verses", JSON.stringify(verses));
+    setVerses([...verses, ['']]);
+    localStorage.setItem('verses', JSON.stringify(verses));
   };
 
   const createHymn = async () => {
@@ -102,15 +107,19 @@ function HymnForm({ hymn, resetLocalStorage }) {
 
   const submitText = () => {
     let text;
-    hymn ? (text = "upraviť") : (text = "vytvoriť");
+    if (hymn) {
+      text = 'upraviť';
+    } else {
+      text = 'vytvoriť';
+    }
     return text;
   };
 
   const resetState = () => {
-    if (oldTitle === null) setTitle();
+    if (oldTitle === null) setTitle('');
     if (oldNumber === null) setNumber();
-    if (oldSeason === null) setSeason("");
-    setVerses([""]);
+    if (oldSeason === null) setSeason('');
+    setVerses(['']);
   };
 
   useEffect(() => {
@@ -122,13 +131,14 @@ function HymnForm({ hymn, resetLocalStorage }) {
     } else {
       resetState();
     }
-  }, []);
+    // eslint-disable-next-line
+  }, [hymn]);
 
   return (
     <div>
       <div className="p-card new-song-container">
         <div className="new-song-line">
-          <h2>{hymn ? "Upraviť pieseň" : "Nová pieseň"}</h2>
+          <h2>{hymn ? 'Upraviť pieseň' : 'Nová pieseň'}</h2>
         </div>
         <div className="new-song-line">
           <span className="p-float-label">
@@ -137,7 +147,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
-                localStorage.setItem("title", e.target.value);
+                localStorage.setItem('title', e.target.value);
               }}
             />
             <label htmlFor="title">Názov piesne</label>
@@ -149,7 +159,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
               id="number"
               onChange={(e) => {
                 setNumber(e.value);
-                localStorage.setItem("number", e.value);
+                localStorage.setItem('number', e.value);
               }}
             />
             <label htmlFor="number">Číslo piesne</label>
@@ -159,7 +169,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
             options={seasons}
             onChange={(e) => {
               setSeason(e.value);
-              localStorage.setItem("season", e.value);
+              localStorage.setItem('season', e.value);
             }}
             optionLabel="name"
             placeholder="Vyber obdobie"
@@ -199,13 +209,13 @@ function HymnForm({ hymn, resetLocalStorage }) {
       <div className="new-song-submit">
         <Button
           id="new-song"
-          style={{ minWidth: "120px" }}
+          style={{ minWidth: '120px' }}
           className="p-button-success"
           onClick={handleSubmit}
         >
           {loading ? (
             <ProgressSpinner
-              style={{ width: "30px", height: "30px" }}
+              style={{ width: '30px', height: '30px' }}
               strokeWidth="5"
             />
           ) : (

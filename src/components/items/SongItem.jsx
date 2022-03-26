@@ -1,23 +1,15 @@
-import React from "react";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { Button } from "primereact/button";
+import React from 'react';
+import { ProgressSpinner } from 'primereact/progressspinner';
+import { Button } from 'primereact/button';
 
-function SongItem({
-  hymn,
-  setHymn,
-  removeHymn,
-  loading,
-  isHymn,
-  setSong,
-  song,
-}) {
+function SongItem({ hymn, setHymn, loading, isHymn, song, setSong, confirm }) {
   return (
     <div
       key={hymn ? hymn.number : song.title}
       className="songs-list-item p-card"
     >
       <h2>
-        {isHymn === true ? hymn.number + " - " : null}
+        {isHymn === true ? hymn.number + ' - ' : null}
         {hymn ? hymn.title : song.title}
       </h2>
       <div className="songs-inforow">
@@ -30,27 +22,27 @@ function SongItem({
               hymn ? setHymn(hymn) : setSong(song);
             }}
             style={{
-              paddingLeft: "5px",
-              paddingRight: "5px",
-              height: "30px",
+              paddingLeft: '5px',
+              paddingRight: '5px',
+              height: '30px',
             }}
           ></Button>
           <Button
             id="new-song"
-            icon={loading ? "" : "pi pi-minus"}
-            onClick={() => removeHymn(hymn)}
+            icon={loading ? '' : 'pi pi-minus'}
+            onClick={() => (hymn ? confirm(hymn) : confirm(song))}
             style={{
-              paddingLeft: "5px",
-              paddingRight: "5px",
-              height: "30px",
+              paddingLeft: '5px',
+              paddingRight: '5px',
+              height: '30px',
             }}
             className="p-button-danger"
           >
             {loading ? (
               <ProgressSpinner
                 style={{
-                  width: "20px",
-                  height: "20px",
+                  width: '20px',
+                  height: '20px',
                 }}
                 strokeWidth="2"
               />
