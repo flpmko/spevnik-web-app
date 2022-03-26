@@ -17,7 +17,7 @@ import { db } from '../../firebase-config';
 // import '../../App.css';
 import '../../style/newSong.css';
 
-function SongForm({ song, resetLocalStorage }) {
+const SongForm = ({ song, resetLocalStorage }) => {
   const oldTitle = localStorage.getItem('title');
   const oldChords = JSON.parse(localStorage.getItem('chords'));
   //   const oldVerses = JSON.parse(localStorage.getItem("verses"));
@@ -191,6 +191,6 @@ function SongForm({ song, resetLocalStorage }) {
       </div>
     </div>
   );
-}
+};
 
 export default SongForm;

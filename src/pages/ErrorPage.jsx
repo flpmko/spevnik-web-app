@@ -1,8 +1,8 @@
-import React from "react";
-import "../style/errorPage.css";
-import "../style/icons.css";
+import React from 'react';
+import '../style/errorPage.css';
+import '../style/icons.css';
 
-function ErrorPage() {
+const ErrorPage = () => {
   return (
     <div className="container">
       <i className="error"></i>
@@ -13,6 +13,6 @@ function ErrorPage() {
       </h3>
     </div>
   );
-}
+};
 
 export default ErrorPage;

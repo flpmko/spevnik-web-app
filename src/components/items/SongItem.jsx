@@ -2,7 +2,15 @@ import React from 'react';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Button } from 'primereact/button';
 
-function SongItem({ hymn, setHymn, loading, isHymn, song, setSong, confirm }) {
+const SongItem = ({
+  hymn,
+  setHymn,
+  loading,
+  isHymn,
+  song,
+  setSong,
+  confirm,
+}) => {
   return (
     <div
       key={hymn ? hymn.number : song.title}
@@ -52,6 +60,6 @@ function SongItem({ hymn, setHymn, loading, isHymn, song, setSong, confirm }) {
       </div>
     </div>
   );
-}
+};
 
 export default SongItem;

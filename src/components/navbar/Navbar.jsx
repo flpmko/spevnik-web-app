@@ -16,6 +16,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       await logout();
+      localStorage.clear();
       navigate('/');
     } catch (err) {
       console.log(err.message);

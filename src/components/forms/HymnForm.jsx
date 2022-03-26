@@ -18,7 +18,7 @@ import { db } from '../../firebase-config';
 // import '../../App.css';
 import '../../style/newSong.css';
 
-function HymnForm({ hymn, resetLocalStorage }) {
+const HymnForm = ({ hymn, resetLocalStorage }) => {
   // data from local storage
   const oldTitle = localStorage.getItem('title');
   const oldNumber = localStorage.getItem('number');
@@ -127,7 +127,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
       setTitle(hymn.title);
       setSeason(hymn.season);
       setNumber(hymn.number);
-      setVerses(hymn.verses);
+      hymn.verses ? setVerses(hymn.verses) : setVerses(['']);
     } else {
       resetState();
     }
@@ -165,7 +165,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
             <label htmlFor="number">Číslo piesne</label>
           </span>
           <Dropdown
-            value={season}
+            value={season ? season : null}
             options={seasons}
             onChange={(e) => {
               setSeason(e.value);
@@ -178,7 +178,7 @@ function HymnForm({ hymn, resetLocalStorage }) {
         <div className="new-song-line">
           <h2>Text piesne</h2>
         </div>
-        {verses.map((item, i) => (
+        {verses?.map((item, i) => (
           <div className="new-song-line" key={i}>
             <span>{i + 1}</span>
             <InputTextarea
@@ -225,6 +225,6 @@ function HymnForm({ hymn, resetLocalStorage }) {
       </div>
     </div>
   );
-}
+};
 
 export default HymnForm;

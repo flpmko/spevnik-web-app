@@ -4,7 +4,9 @@ import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 import { InputText } from 'primereact/inputtext';
 import { Dropdown } from 'primereact/dropdown';
+import { Paginator } from 'primereact/paginator';
 import { confirmDialog } from 'primereact/confirmdialog';
+import { ProgressSpinner } from 'primereact/progressspinner';
 
 import { db } from '../firebase-config';
 import HymnForm from '../components/forms/HymnForm';
@@ -13,7 +15,7 @@ import SongItem from '../components/items/SongItem';
 
 import '../style/songs.css';
 
-function App() {
+const Songs = () => {
   //main vars
   const [hymns, setHymns] = useState([]);
   const [hymn, setHymn] = useState(null);
@@ -24,17 +26,24 @@ function App() {
   const hymnsDocRef = doc(db, 'index/hymns');
   const songsDocRef = doc(db, 'index/songs');
 
+  // pagination
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [first, setFirst] = useState(0);
+  const currentHymns = hymns.slice(first, first + itemsPerPage);
+  const currentSongs = songs.slice(first, first + itemsPerPage);
+
   // helpers
   const [loading, setLoading] = useState(false);
   const [isHymn, setIsHymn] = useState();
   const [query, setQuery] = useState();
-  const [orderAscending, setOrderAscending] = useState(false);
+  const [orderAscHymns, setOrderAscHymns] = useState(false);
+  const [orderAscSongs, setOrderAscSongs] = useState(false);
   const [activeCategory, setActiveCategory] = useState('Spevníkové');
   const categories = [
     { name: 'Spevníkové', value: 'Spevníkové' },
     { name: 'Mládežnícke', value: 'Mládežnícke' },
-    { name: 'Antifóny', value: 'Antifóny' },
-    { name: 'Predspevy', value: 'Predspevy' },
+    // { name: 'Antifóny', value: 'Antifóny' },
+    // { name: 'Predspevy', value: 'Predspevy' },
   ];
 
   const confirm = (songItem) => {
@@ -109,18 +118,18 @@ function App() {
   };
 
   const orderHymns = () => {
-    if (orderAscending) {
+    if (orderAscHymns) {
       const myData = [].concat(hymns).sort((a, b) => a.number - b.number);
       setHymns(myData);
     } else {
       const myData = [].concat(hymns).sort((a, b) => a.number + b.number);
       setHymns(myData);
     }
-    setOrderAscending(!orderAscending);
+    setOrderAscHymns(!orderAscHymns);
   };
 
   const orderSongs = () => {
-    if (orderAscending) {
+    if (orderAscSongs) {
       const myData = []
         .concat(songs)
         .sort((a, b) => (a.title > b.title ? 1 : -1));
@@ -131,7 +140,12 @@ function App() {
         .sort((a, b) => (a.title < b.title ? 1 : -1));
       setSongs(myData);
     }
-    setOrderAscending(!orderAscending);
+    setOrderAscSongs(!orderAscSongs);
+  };
+
+  const onPageChange = (e) => {
+    setFirst(e.first);
+    setItemsPerPage(e.rows);
   };
 
   const getHymnsData = async () => {
@@ -145,9 +159,10 @@ function App() {
   };
 
   useEffect(() => {
+    setLoading(true);
     const category = localStorage.getItem('category');
-    setActiveCategory(category);
-    if (category === 'Spevníkové') {
+    if (category) setActiveCategory(category);
+    if (activeCategory === 'Spevníkové') {
       setIsHymn(true);
       setQuery(undefined);
     } else {
@@ -157,6 +172,8 @@ function App() {
     getHymnsData();
     getSongsData();
     orderHymns();
+    orderSongs();
+    setLoading(false);
     // eslint-disable-next-line
   }, []);
 
@@ -216,7 +233,7 @@ function App() {
                 />
                 <Button
                   icon={
-                    orderAscending
+                    orderAscHymns
                       ? 'pi pi-sort-numeric-up'
                       : 'pi pi-sort-numeric-down'
                   }
@@ -241,7 +258,7 @@ function App() {
                 />
                 <Button
                   icon={
-                    orderAscending
+                    orderAscSongs
                       ? 'pi pi-sort-alpha-up'
                       : 'pi pi-sort-alpha-down'
                   }
@@ -250,8 +267,14 @@ function App() {
                 />
               </div>
             )}
+            {loading && (
+              <ProgressSpinner
+                style={{ width: '30px', height: '30px' }}
+                strokeWidth="5"
+              />
+            )}
             {isHymn &&
-              hymns
+              currentHymns
                 .filter((searchHymn) =>
                   searchHymn.number.toString().match(query)
                 )
@@ -268,7 +291,7 @@ function App() {
                   );
                 })}
             {!isHymn &&
-              songs
+              currentSongs
                 .filter((searchSong) =>
                   searchSong.title.toLowerCase().includes(query)
                 )
@@ -284,11 +307,18 @@ function App() {
                     />
                   );
                 })}
+            <Paginator
+              first={first}
+              rows={itemsPerPage}
+              totalRecords={hymns.length}
+              onPageChange={onPageChange}
+              rowsPerPageOptions={[5, 10, 20, 30]}
+            ></Paginator>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default Songs;
