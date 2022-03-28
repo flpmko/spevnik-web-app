@@ -3,6 +3,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  browserSessionPersistence,
+  setPersistence,
 } from 'firebase/auth';
 import { auth } from '../firebase-config';
 
@@ -11,8 +13,10 @@ const userContext = createContext();
 export function UserContextProvider({ children }) {
   const [currentUser, setCurrentUser] = React.useState();
 
-  const login = (email, password) => {
-    return signInWithEmailAndPassword(auth, email, password);
+  const login = async (email, password) => {
+    await setPersistence(auth, browserSessionPersistence).then(() => {
+      return signInWithEmailAndPassword(auth, email, password);
+    });
   };
 
   const logout = () => {

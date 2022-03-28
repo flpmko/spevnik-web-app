@@ -15,7 +15,6 @@ import {
 
 import { db } from '../../firebase-config';
 
-// import '../../App.css';
 import '../../style/newSong.css';
 
 const HymnForm = ({ hymn, resetLocalStorage }) => {
