@@ -4,6 +4,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   doc,
@@ -17,12 +18,11 @@ import { db } from '../../firebase-config';
 
 import '../../style/newSong.css';
 
-const HymnForm = ({ hymn, resetLocalStorage }) => {
+const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
   // data from local storage
   const oldTitle = localStorage.getItem('title');
   const oldNumber = localStorage.getItem('number');
   const oldSeason = localStorage.getItem('season');
-  //   const oldVerses = JSON.parse(localStorage.getItem("verses"));
 
   // main vars
   const [title, setTitle] = useState(oldTitle ? oldTitle : '');
@@ -32,6 +32,7 @@ const HymnForm = ({ hymn, resetLocalStorage }) => {
 
   // helper vars
   const [loading, setLoading] = useState(false);
+  const [showMsg, setShowMsg] = useState(false);
   const hymnsRef = doc(db, 'index/hymns');
 
   const seasons = [
@@ -77,7 +78,7 @@ const HymnForm = ({ hymn, resetLocalStorage }) => {
         season: season,
         verses: verses,
       }),
-    });
+    }).then(reload());
     await updateDoc(hymnsRef, {
       lastChange: serverTimestamp(),
     });
@@ -100,8 +101,29 @@ const HymnForm = ({ hymn, resetLocalStorage }) => {
     setLoading(false);
   };
 
+  const renderErrorMessage = (message) => {
+    return (
+      <Message severity="error" text={message} style={{ marginLeft: '20px' }} />
+    );
+  };
+
+  const validate = () => {
+    if (
+      title === '' ||
+      title === null ||
+      number === undefined ||
+      number === null
+    ) {
+      setShowMsg(true);
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = () => {
-    hymn ? updateHymn() : createHymn();
+    if (validate()) {
+      hymn ? updateHymn() : createHymn();
+    }
   };
 
   const submitText = () => {
@@ -115,9 +137,9 @@ const HymnForm = ({ hymn, resetLocalStorage }) => {
   };
 
   const resetState = () => {
-    if (oldTitle === null) setTitle('');
-    if (oldNumber === null) setNumber();
-    if (oldSeason === null) setSeason('');
+    setTitle('');
+    setNumber();
+    setSeason('');
     setVerses(['']);
   };
 
@@ -138,6 +160,7 @@ const HymnForm = ({ hymn, resetLocalStorage }) => {
       <div className="p-card new-song-container">
         <div className="new-song-line">
           <h2>{hymn ? 'Upraviť pieseň' : 'Nová pieseň'}</h2>
+          {showMsg && renderErrorMessage('Názov a číslo piesne sú povinné!')}
         </div>
         <div className="new-song-line">
           <span className="p-float-label">

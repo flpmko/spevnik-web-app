@@ -3,6 +3,7 @@ import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Chips } from 'primereact/chips';
 import { Button } from 'primereact/button';
+import { Message } from 'primereact/message';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
   doc,
@@ -14,17 +15,21 @@ import {
 
 import { db } from '../../firebase-config';
 
-// import '../../App.css';
 import '../../style/newSong.css';
 
-const SongForm = ({ song, resetLocalStorage }) => {
+const SongForm = ({ song, resetLocalStorage, reload }) => {
+  // data from local storage
   const oldTitle = localStorage.getItem('title');
   const oldChords = JSON.parse(localStorage.getItem('chords'));
-  //   const oldVerses = JSON.parse(localStorage.getItem("verses"));
+
+  // main vars
   const [title, setTitle] = useState(oldTitle ? oldTitle : '');
   const [chords, setChords] = useState(oldChords ? oldChords : []);
   const [verses, setVerses] = useState(['']);
+
+  // helper vars
   const [loading, setLoading] = useState(false);
+  const [showMsg, setShowMsg] = useState(false);
   const songsRef = doc(db, 'index/songs');
 
   // handle input change on verses
@@ -58,7 +63,7 @@ const SongForm = ({ song, resetLocalStorage }) => {
         chords: chords,
         verses: verses,
       }),
-    });
+    }).then(reload());
     await updateDoc(songsRef, {
       lastChange: serverTimestamp(),
     });
@@ -80,8 +85,24 @@ const SongForm = ({ song, resetLocalStorage }) => {
     setLoading(false);
   };
 
+  const renderErrorMessage = (message) => {
+    return (
+      <Message severity="error" text={message} style={{ marginLeft: '20px' }} />
+    );
+  };
+
+  const validate = () => {
+    if (title === '' || title === null) {
+      setShowMsg(true);
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmitClick = () => {
-    song ? updateSong() : createSong();
+    if (validate()) {
+      song ? updateSong() : createSong();
+    }
   };
 
   const submitText = () => {
@@ -95,8 +116,8 @@ const SongForm = ({ song, resetLocalStorage }) => {
   };
 
   const resetState = () => {
-    if (oldTitle === null) setTitle('');
-    if (oldChords === null) setChords([]);
+    setTitle('');
+    setChords([]);
     setVerses(['']);
   };
 
@@ -116,6 +137,7 @@ const SongForm = ({ song, resetLocalStorage }) => {
       <div className="p-card new-song-container">
         <div className="new-song-line">
           <h2>{song ? 'Upraviť pieseň' : 'Nová pieseň'}</h2>
+          {showMsg && renderErrorMessage('Názov piesne je povinný!')}
         </div>
         <div className="new-song-line">
           <span className="p-float-label">

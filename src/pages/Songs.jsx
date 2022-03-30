@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getDoc, doc, arrayRemove, updateDoc } from 'firebase/firestore';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
@@ -27,31 +27,28 @@ const Songs = () => {
   const songsDocRef = doc(db, 'index/songs');
 
   // pagination
-  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [first, setFirst] = useState(0);
-  const currentHymns = hymns.slice(first, first + itemsPerPage);
-  const currentSongs = songs.slice(first, first + itemsPerPage);
+  const [totalItems, setTotalItems] = useState(hymns.length);
 
   // helpers
   const [loading, setLoading] = useState(false);
-  const [isHymn, setIsHymn] = useState();
-  const [query, setQuery] = useState();
+  const [isHymn, setIsHymn] = useState(true);
+  const [query, setQuery] = useState(false);
   const [orderAscHymns, setOrderAscHymns] = useState(false);
   const [orderAscSongs, setOrderAscSongs] = useState(false);
   const [activeCategory, setActiveCategory] = useState('Spevníkové');
   const categories = [
     { name: 'Spevníkové', value: 'Spevníkové' },
     { name: 'Mládežnícke', value: 'Mládežnícke' },
-    // { name: 'Antifóny', value: 'Antifóny' },
-    // { name: 'Predspevy', value: 'Predspevy' },
   ];
 
   const confirm = (songItem) => {
     confirmDialog({
       message: 'Naoazaj chceš vymazať pieseň ' + songItem.title + '?',
       header: 'Potvrdenie',
-      acceptLabel: 'Áno',
-      rejectLabel: 'Nie',
+      acceptLabel: 'Vymazať',
+      rejectLabel: 'Zrušiť',
       icon: 'pi pi-exclamation-triangle',
       acceptClassName: 'p-button-danger',
       rejectClassName: 'p-button-secondary',
@@ -99,6 +96,7 @@ const Songs = () => {
   };
 
   const newSongForm = () => {
+    console.log('newsong');
     resetLocalStorage();
     setHymn(null);
     setSong(null);
@@ -149,30 +147,67 @@ const Songs = () => {
   };
 
   const getHymnsData = async () => {
-    const hymnsData = await getDoc(hymnsDocRef);
-    setHymns(hymnsData.get('all'));
+    const data = await getDoc(hymnsDocRef);
+    const hymnsObject = data.get('all').sort((a, b) => a.number - b.number);
+    setHymns(hymnsObject);
   };
 
   const getSongsData = async () => {
-    const songsData = await getDoc(songsDocRef);
-    setSongs(songsData.get('all'));
+    const data = await getDoc(songsDocRef);
+    const songsObject = data
+      .get('all')
+      .sort((a, b) => (a.title > b.title ? 1 : -1));
+    setSongs(songsObject);
+  };
+
+  const songsData = useMemo(() => {
+    if (!isHymn) {
+      let computedSongs = songs;
+      if (query) {
+        computedSongs = computedSongs.filter((searchSong) =>
+          searchSong.title.toLowerCase().includes(query)
+        );
+      }
+      setTotalItems(computedSongs.length);
+
+      return computedSongs.slice(first, first + itemsPerPage);
+    }
+  }, [songs, first, itemsPerPage, query, isHymn]);
+
+  const hymnsData = useMemo(() => {
+    if (isHymn) {
+      let computedHymns = hymns;
+      if (query) {
+        computedHymns = computedHymns.filter((searchHymn) =>
+          searchHymn.number.toString().match(query)
+        );
+      }
+      setTotalItems(computedHymns.length);
+
+      return computedHymns.slice(first, first + itemsPerPage);
+    }
+  }, [hymns, first, itemsPerPage, query, isHymn]);
+
+  const reload = () => {
+    setLoading(true);
+    getHymnsData();
+    getSongsData();
+    setLoading(false);
   };
 
   useEffect(() => {
     setLoading(true);
     const category = localStorage.getItem('category');
     if (category) setActiveCategory(category);
-    if (activeCategory === 'Spevníkové') {
-      setIsHymn(true);
-      setQuery(undefined);
-    } else {
+    if (category !== 'Spevníkové') {
       setIsHymn(false);
       setQuery('');
+    } else {
+      setIsHymn(true);
+      setQuery(undefined);
     }
     getHymnsData();
     getSongsData();
-    orderHymns();
-    orderSongs();
     setLoading(false);
     // eslint-disable-next-line
   }, []);
@@ -209,76 +244,81 @@ const Songs = () => {
         </div>
         <div style={{ display: 'flex', gap: '20px' }}>
           {activeCategory === categories.at(0).name ? (
-            <HymnForm hymn={hymn} resetLocalStorage={resetLocalStorage} />
+            <HymnForm
+              hymn={hymn}
+              resetLocalStorage={resetLocalStorage}
+              reload={reload}
+            />
           ) : (
-            <SongForm song={song} resetLocalStorage={resetLocalStorage} />
+            <SongForm
+              song={song}
+              resetLocalStorage={resetLocalStorage}
+              reload={reload}
+            />
           )}
           <div
             className="songs-list p-card"
             style={{ backgroundColor: 'GrayText', minWidth: '450px' }}
           >
-            {isHymn && (
-              <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
-                <span className="p-inputgroup-addon">
-                  <i className="pi pi-search" />
-                </span>
-                <InputNumber
-                  placeholder="číslo piesne"
-                  value={query}
-                  id="number"
-                  onChange={(e) => {
-                    if (e.value === null) setQuery(undefined);
-                    else setQuery(e.value);
-                  }}
+            <div>
+              {isHymn && (
+                <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
+                  <span className="p-inputgroup-addon">
+                    <i className="pi pi-search" />
+                  </span>
+                  <InputNumber
+                    placeholder="číslo piesne"
+                    value={query}
+                    id="number"
+                    onChange={(e) => {
+                      if (e.value === null) setQuery(undefined);
+                      else setQuery(e.value);
+                    }}
+                  />
+                  <Button
+                    icon={
+                      orderAscHymns
+                        ? 'pi pi-sort-numeric-up'
+                        : 'pi pi-sort-numeric-down'
+                    }
+                    className="p-button-primary"
+                    onClick={orderHymns}
+                  />
+                </div>
+              )}
+              {!isHymn && (
+                <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
+                  <span className="p-inputgroup-addon">
+                    <i className="pi pi-search" />
+                  </span>
+                  <InputText
+                    placeholder="názov piesne"
+                    value={query}
+                    id="text"
+                    onChange={(e) => {
+                      if (e.target.value === null) setQuery(undefined);
+                      else setQuery(e.target.value);
+                    }}
+                  />
+                  <Button
+                    icon={
+                      orderAscSongs
+                        ? 'pi pi-sort-alpha-down'
+                        : 'pi pi-sort-alpha-up'
+                    }
+                    className="p-button-primary"
+                    onClick={orderSongs}
+                  />
+                </div>
+              )}
+              {loading && (
+                <ProgressSpinner
+                  style={{ width: '30px', height: '30px' }}
+                  strokeWidth="5"
                 />
-                <Button
-                  icon={
-                    orderAscHymns
-                      ? 'pi pi-sort-numeric-up'
-                      : 'pi pi-sort-numeric-down'
-                  }
-                  className="p-button-primary"
-                  onClick={orderHymns}
-                />
-              </div>
-            )}
-            {!isHymn && (
-              <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
-                <span className="p-inputgroup-addon">
-                  <i className="pi pi-search" />
-                </span>
-                <InputText
-                  placeholder="názov piesne"
-                  value={query}
-                  id="text"
-                  onChange={(e) => {
-                    if (e.target.value === null) setQuery(undefined);
-                    else setQuery(e.target.value);
-                  }}
-                />
-                <Button
-                  icon={
-                    orderAscSongs
-                      ? 'pi pi-sort-alpha-up'
-                      : 'pi pi-sort-alpha-down'
-                  }
-                  className="p-button-primary"
-                  onClick={orderSongs}
-                />
-              </div>
-            )}
-            {loading && (
-              <ProgressSpinner
-                style={{ width: '30px', height: '30px' }}
-                strokeWidth="5"
-              />
-            )}
-            {isHymn &&
-              currentHymns
-                .filter((searchHymn) =>
-                  searchHymn.number.toString().match(query)
-                )
-                .map((hymnItem) => {
+              )}
+              {isHymn &&
+                hymnsData.map((hymnItem) => {
                   return (
                     <SongItem
                       key={hymnItem.number}
@@ -290,12 +330,8 @@ const Songs = () => {
                     />
                   );
                 })}
-            {!isHymn &&
-              currentSongs
-                .filter((searchSong) =>
-                  searchSong.title.toLowerCase().includes(query)
-                )
-                .map((songItem) => {
+              {!isHymn &&
+                songsData.map((songItem) => {
                   return (
                     <SongItem
                       key={songItem.title}
@@ -307,13 +343,16 @@ const Songs = () => {
                     />
                   );
                 })}
-            <Paginator
-              first={first}
-              rows={itemsPerPage}
-              totalRecords={hymns.length}
-              onPageChange={onPageChange}
-              rowsPerPageOptions={[5, 10, 20, 30]}
-            ></Paginator>
+            </div>
+            <div>
+              <Paginator
+                first={first}
+                rows={itemsPerPage}
+                totalRecords={totalItems}
+                onPageChange={onPageChange}
+                rowsPerPageOptions={[10, 20, 30]}
+              ></Paginator>
+            </div>
           </div>
         </div>
       </div>

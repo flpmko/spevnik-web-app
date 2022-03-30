@@ -6,12 +6,23 @@
 }
 .songs-list {
   padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 .songs-list-item {
-  padding: 10px;
+  padding: 0 20px 0 20px;
   margin-bottom: 5px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.songs-title-container {
+  /* display: flex; */
+  align-items: center;
+  justify-content: flex-start;
+  max-width: 300px;
 }
 .songs-season {
   font-style: italic;
@@ -23,18 +34,12 @@
   align-items: center;
   padding-bottom: 20px;
 }
-.songs-inforow {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-end;
-  padding-top: 15px;
-}
 .songs-button-container {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 10px;
+  margin-left: 20px;
 }
 #new-song {
   font-size: x-large;
