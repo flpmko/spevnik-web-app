@@ -36,14 +36,7 @@ const Navbar = () => {
         <i className="logo-spevnik"></i>
         <h4>Evanjelický spevník</h4>
       </div>
-      <ul
-        className={active}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'flex-end',
-        }}
-      >
+      <ul className={active}>
         {currentUser && <li>{currentUser.email}</li>}
         {currentUser && (
           <li>

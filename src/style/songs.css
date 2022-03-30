@@ -22,7 +22,6 @@
   /* display: flex; */
   align-items: center;
   justify-content: flex-start;
-  max-width: 300px;
 }
 .songs-season {
   font-style: italic;
@@ -41,6 +40,11 @@
   gap: 10px;
   margin-left: 20px;
 }
+.content-holder {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
 #new-song {
   font-size: x-large;
   font-weight: bold;
@@ -52,6 +56,11 @@
   /* width: 160px; */
   transition: 0.5s;
 }
-#new-song:hover {
-  /* width: 250px; */
+
+@media screen and (max-width: 1300px) {
+  .content-holder {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 }

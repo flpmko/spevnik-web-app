@@ -242,7 +242,7 @@ const Songs = () => {
             ></Button>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '20px' }}>
+        <div className="content-holder">
           {activeCategory === categories.at(0).name ? (
             <HymnForm
               hymn={hymn}
