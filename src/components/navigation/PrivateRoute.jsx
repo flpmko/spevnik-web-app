@@ -11,8 +11,6 @@ const PrivateRoute = ({ children }) => {
     ? JSON.parse(sessionStorage.getItem(userKey))
     : undefined;
 
-  console.log(sessionUser);
-
   if (!currentUser && !sessionUser) {
     return <Navigate to="/login" />;
   }

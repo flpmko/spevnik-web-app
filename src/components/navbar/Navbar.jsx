@@ -31,7 +31,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav>
+    <nav className="navbar-top">
       <div className="logo">
         <i className="logo-spevnik"></i>
         <h4>Evanjelický spevník</h4>

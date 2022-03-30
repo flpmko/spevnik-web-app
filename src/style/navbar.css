@@ -37,6 +37,11 @@ nav {
   margin: 5px;
   transition: 0.4s ease-in;
 }
+.navbar-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
 @media screen and (max-width: 768px) {
   body {
     overflow-x: hidden;

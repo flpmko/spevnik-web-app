@@ -1,11 +1,8 @@
 .content {
   text-align: left;
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-top: 20px;
   width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 20px;
+  margin: 0 auto 50px auto;
 }
 h2 {
   margin-bottom: 10px;
