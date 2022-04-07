@@ -197,8 +197,9 @@ const Songs = () => {
 
   useEffect(() => {
     setLoading(true);
-    const category = localStorage.getItem('category');
-    if (category) setActiveCategory(category);
+    let category = localStorage.getItem('category');
+    if (!category) category = 'Spevníkové';
+    setActiveCategory(category);
     if (category !== 'Spevníkové') {
       setIsHymn(false);
       setQuery('');
@@ -243,7 +244,7 @@ const Songs = () => {
           </div>
         </div>
         <div className="content-holder">
-          {activeCategory === categories.at(0).name ? (
+          {isHymn ? (
             <HymnForm
               hymn={hymn}
               resetLocalStorage={resetLocalStorage}
