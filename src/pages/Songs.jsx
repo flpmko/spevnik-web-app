@@ -1,19 +1,25 @@
-import { useState, useEffect, useMemo } from 'react';
-import { getDoc, doc, arrayRemove, updateDoc } from 'firebase/firestore';
-import { Button } from 'primereact/button';
-import { InputNumber } from 'primereact/inputnumber';
-import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { Paginator } from 'primereact/paginator';
-import { confirmDialog } from 'primereact/confirmdialog';
-import { ProgressSpinner } from 'primereact/progressspinner';
+import { useState, useEffect, useMemo } from "react";
+import {
+  getDoc,
+  doc,
+  arrayRemove,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { Button } from "primereact/button";
+import { InputNumber } from "primereact/inputnumber";
+import { InputText } from "primereact/inputtext";
+import { Dropdown } from "primereact/dropdown";
+import { Paginator } from "primereact/paginator";
+import { confirmDialog } from "primereact/confirmdialog";
+import { ProgressSpinner } from "primereact/progressspinner";
 
-import { db } from '../firebase-config';
-import HymnForm from '../components/forms/HymnForm';
-import SongForm from '../components/forms/SongForm';
-import SongItem from '../components/items/SongItem';
+import { db } from "../firebase-config";
+import HymnForm from "../components/forms/HymnForm";
+import SongForm from "../components/forms/SongForm";
+import SongItem from "../components/items/SongItem";
 
-import '../style/songs.css';
+import "../style/songs.css";
 
 const Songs = () => {
   //main vars
@@ -23,8 +29,9 @@ const Songs = () => {
   const [song, setSong] = useState(null);
 
   // db refs
-  const hymnsDocRef = doc(db, 'index/hymns');
-  const songsDocRef = doc(db, 'index/songs');
+  const hymnsDocRef = doc(db, "index/hymns");
+  const songsDocRef = doc(db, "index/songs");
+  const timesRef = doc(db, "index/timestamps");
 
   // pagination
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -37,21 +44,21 @@ const Songs = () => {
   const [query, setQuery] = useState(false);
   const [orderAscHymns, setOrderAscHymns] = useState(false);
   const [orderAscSongs, setOrderAscSongs] = useState(false);
-  const [activeCategory, setActiveCategory] = useState('Spevníkové');
+  const [activeCategory, setActiveCategory] = useState("Spevníkové");
   const categories = [
-    { name: 'Spevníkové', value: 'Spevníkové' },
-    { name: 'Mládežnícke', value: 'Mládežnícke' },
+    { name: "Spevníkové", value: "Spevníkové" },
+    { name: "Mládežnícke", value: "Mládežnícke" },
   ];
 
   const confirm = (songItem) => {
     confirmDialog({
-      message: 'Naoazaj chceš vymazať pieseň ' + songItem.title + '?',
-      header: 'Potvrdenie',
-      acceptLabel: 'Vymazať',
-      rejectLabel: 'Zrušiť',
-      icon: 'pi pi-exclamation-triangle',
-      acceptClassName: 'p-button-danger',
-      rejectClassName: 'p-button-secondary',
+      message: "Naoazaj chceš vymazať pieseň " + songItem.title + "?",
+      header: "Potvrdenie",
+      acceptLabel: "Vymazať",
+      rejectLabel: "Zrušiť",
+      icon: "pi pi-exclamation-triangle",
+      acceptClassName: "p-button-danger",
+      rejectClassName: "p-button-secondary",
       accept: () => (isHymn ? removeHymn(songItem) : removeSong(songItem)),
       reject: () => null,
     });
@@ -66,6 +73,9 @@ const Songs = () => {
           number: hymnPar.number,
           season: hymnPar.season,
         }),
+      });
+      await updateDoc(timesRef, {
+        hymns: serverTimestamp(),
       });
       setLoading(false);
       getHymnsData();
@@ -82,21 +92,24 @@ const Songs = () => {
           verses: songPar.verses,
         }),
       });
+      await updateDoc(timesRef, {
+        songs: serverTimestamp(),
+      });
       setLoading(false);
       getSongsData();
     }
   };
 
   const resetLocalStorage = () => {
-    localStorage.removeItem('title');
-    localStorage.removeItem('chords');
-    localStorage.removeItem('number');
-    localStorage.removeItem('season');
-    localStorage.removeItem('verses');
+    localStorage.removeItem("title");
+    localStorage.removeItem("chords");
+    localStorage.removeItem("number");
+    localStorage.removeItem("season");
+    localStorage.removeItem("verses");
   };
 
   const newSongForm = () => {
-    console.log('newsong');
+    console.log("newsong");
     resetLocalStorage();
     setHymn(null);
     setSong(null);
@@ -104,12 +117,12 @@ const Songs = () => {
 
   const changeCategory = (e) => {
     setActiveCategory(e.value);
-    if (e.value === 'Spevníkové') {
+    if (e.value === "Spevníkové") {
       setQuery(undefined);
     } else {
-      setQuery('');
+      setQuery("");
     }
-    localStorage.setItem('category', e.value);
+    localStorage.setItem("category", e.value);
     setIsHymn(!isHymn);
     setHymn(null);
     setSong(null);
@@ -148,14 +161,14 @@ const Songs = () => {
 
   const getHymnsData = async () => {
     const data = await getDoc(hymnsDocRef);
-    const hymnsObject = data.get('all').sort((a, b) => a.number - b.number);
+    const hymnsObject = data.get("all").sort((a, b) => a.number - b.number);
     setHymns(hymnsObject);
   };
 
   const getSongsData = async () => {
     const data = await getDoc(songsDocRef);
     const songsObject = data
-      .get('all')
+      .get("all")
       .sort((a, b) => (a.title > b.title ? 1 : -1));
     setSongs(songsObject);
   };
@@ -197,12 +210,12 @@ const Songs = () => {
 
   useEffect(() => {
     setLoading(true);
-    let category = localStorage.getItem('category');
-    if (!category) category = 'Spevníkové';
+    let category = localStorage.getItem("category");
+    if (!category) category = "Spevníkové";
     setActiveCategory(category);
-    if (category !== 'Spevníkové') {
+    if (category !== "Spevníkové") {
       setIsHymn(false);
-      setQuery('');
+      setQuery("");
     } else {
       setIsHymn(true);
       setQuery(undefined);
@@ -222,10 +235,10 @@ const Songs = () => {
         <div
           className="songs-dropdown"
           style={{
-            display: 'flex',
-            alignItems: 'center',
-            paddingBottom: '20px',
-            justifyContent: 'space-between',
+            display: "flex",
+            alignItems: "center",
+            paddingBottom: "20px",
+            justifyContent: "space-between",
           }}
         >
           <Dropdown
@@ -259,11 +272,11 @@ const Songs = () => {
           )}
           <div
             className="songs-list p-card"
-            style={{ backgroundColor: 'GrayText', minWidth: '450px' }}
+            style={{ backgroundColor: "GrayText", minWidth: "450px" }}
           >
             <div>
               {isHymn && (
-                <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
+                <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
                   <span className="p-inputgroup-addon">
                     <i className="pi pi-search" />
                   </span>
@@ -279,8 +292,8 @@ const Songs = () => {
                   <Button
                     icon={
                       orderAscHymns
-                        ? 'pi pi-sort-numeric-up'
-                        : 'pi pi-sort-numeric-down'
+                        ? "pi pi-sort-numeric-up"
+                        : "pi pi-sort-numeric-down"
                     }
                     className="p-button-primary"
                     onClick={orderHymns}
@@ -288,7 +301,7 @@ const Songs = () => {
                 </div>
               )}
               {!isHymn && (
-                <div className="p-inputgroup" style={{ paddingBottom: '20px' }}>
+                <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
                   <span className="p-inputgroup-addon">
                     <i className="pi pi-search" />
                   </span>
@@ -304,8 +317,8 @@ const Songs = () => {
                   <Button
                     icon={
                       orderAscSongs
-                        ? 'pi pi-sort-alpha-down'
-                        : 'pi pi-sort-alpha-up'
+                        ? "pi pi-sort-alpha-down"
+                        : "pi pi-sort-alpha-up"
                     }
                     className="p-button-primary"
                     onClick={orderSongs}
@@ -314,7 +327,7 @@ const Songs = () => {
               )}
               {loading && (
                 <ProgressSpinner
-                  style={{ width: '30px', height: '30px' }}
+                  style={{ width: "30px", height: "30px" }}
                   strokeWidth="5"
                 />
               )}
