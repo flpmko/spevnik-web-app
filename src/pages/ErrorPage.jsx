@@ -1,6 +1,6 @@
-import React from 'react';
-import '../style/errorPage.css';
-import '../style/icons.css';
+import React from "react";
+import "../style/errorPage.css";
+import "../style/icons.css";
 
 const ErrorPage = () => {
   return (
@@ -9,7 +9,7 @@ const ErrorPage = () => {
       <p>404</p>
       <h1 className="MainTitle">Táto stránka neexistuje.</h1>
       <h3>
-        poď späť <a href="/">domov</a>
+        poď späť <a href="/spevnik-web-app/">domov</a>
       </h3>
     </div>
   );

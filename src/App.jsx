@@ -35,7 +35,7 @@ const App = () => {
           ></Route>
           <Route path="/spevnik-web-app/" element={<Login />}></Route>
           <Route path="/spevnik-web-app/login" element={<Login />}></Route>
-          <Route path="/spevnik-web-app/*" element={<ErrorPage />}></Route>
+          <Route path="/*" element={<ErrorPage />}></Route>
         </Routes>
       </UserContextProvider>
     </Router>
