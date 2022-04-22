@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Button } from 'primereact/button';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Button } from "primereact/button";
+import { useNavigate } from "react-router-dom";
 
-import { useUserAuth } from '../../context/UserContext';
+import { useUserAuth } from "../../context/UserContext";
 
-import '../../style/navbar.css';
-import '../../style/icons.css';
+import "../../style/navbar.css";
+import "../../style/icons.css";
 
 const Navbar = () => {
-  const [active, setActive] = useState('nav-links');
-  const [burger, setBurger] = useState('burger');
+  const [active, setActive] = useState("nav-links");
+  const [burger, setBurger] = useState("burger");
   const { currentUser, logout } = useUserAuth();
   const navigate = useNavigate();
 
@@ -17,17 +17,17 @@ const Navbar = () => {
     try {
       await logout();
       localStorage.clear();
-      navigate('/');
+      navigate("/spevnik-web-app/");
     } catch (err) {
       console.log(err.message);
     }
   };
 
   const navToggle = () => {
-    active === 'nav-links'
-      ? setActive('nav-links nav-active')
-      : setActive('nav-links');
-    burger === 'burger' ? setBurger('burger toggle') : setBurger('burger');
+    active === "nav-links"
+      ? setActive("nav-links nav-active")
+      : setActive("nav-links");
+    burger === "burger" ? setBurger("burger toggle") : setBurger("burger");
   };
 
   return (

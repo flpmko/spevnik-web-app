@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import { Checkbox } from 'primereact/checkbox';
-import { Message } from 'primereact/message';
-import { sendPasswordResetEmail } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { InputText } from "primereact/inputtext";
+import { Button } from "primereact/button";
+import { Checkbox } from "primereact/checkbox";
+import { Message } from "primereact/message";
+import { sendPasswordResetEmail } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
-import { auth } from '../firebase-config';
-import { useUserAuth } from '../context/UserContext';
+import { auth } from "../firebase-config";
+import { useUserAuth } from "../context/UserContext";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [checked, setChecked] = useState(false);
   const { login } = useUserAuth();
   const navigate = useNavigate();
@@ -20,8 +20,8 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await login(email, password);
-      setError('');
-      navigate('/songs');
+      setError("");
+      navigate("/spevnik-web-app/songs");
     } catch (err) {
       setError(err.message);
     }
@@ -29,17 +29,17 @@ const Login = () => {
 
   const formatError = (message) => {
     switch (message) {
-      case 'Firebase: Error (auth/wrong-password).':
-        setError('Nesprávne heslo!');
+      case "Firebase: Error (auth/wrong-password).":
+        setError("Nesprávne heslo!");
         break;
-      case 'Firebase: Error (auth/user-not-found).':
-        setError('Užívateľ nebol nájdený.');
+      case "Firebase: Error (auth/user-not-found).":
+        setError("Užívateľ nebol nájdený.");
         break;
-      case 'Firebase: Error (auth/invalid-email).':
-        setError('Nesprávny email!');
+      case "Firebase: Error (auth/invalid-email).":
+        setError("Nesprávny email!");
         break;
-      case 'Firebase: Error (auth/internal-error).':
-        setError('Chyba prihlasovania!');
+      case "Firebase: Error (auth/internal-error).":
+        setError("Chyba prihlasovania!");
         break;
 
       default:
@@ -48,18 +48,18 @@ const Login = () => {
   };
 
   const renderErrorMessage = (message) => {
-    if (message === '') {
+    if (message === "") {
       return null;
     } else {
       formatError(message);
     }
     return (
-      <Message severity="error" text={message} style={{ marginLeft: '20px' }} />
+      <Message severity="error" text={message} style={{ marginLeft: "20px" }} />
     );
   };
 
   return (
-    <div style={{ marginTop: '10rem' }}>
+    <div style={{ marginTop: "10rem" }}>
       <div className="flex align-items-center justify-content-center">
         <div className="surface-card p-4 shadow-2 border-round w-full lg:w-6">
           <div className="text-center mb-5">
