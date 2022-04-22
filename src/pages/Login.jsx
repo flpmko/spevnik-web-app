@@ -61,9 +61,12 @@ const Login = () => {
   return (
     <div style={{ marginTop: "10rem" }}>
       <div className="flex align-items-center justify-content-center">
-        <div className="surface-card p-4 shadow-2 border-round w-full lg:w-6">
+        <div
+          className="surface-card p-4 shadow-2 border-round w-full lg:w-6"
+          style={{ maxWidth: "640px" }}
+        >
           <div className="text-center mb-5">
-            <img src="/logo192.png" alt="hyper" height={80} className="mb-3" />
+            <i className="logo-spevnik-big"></i>
             <div className="text-900 text-3xl font-medium mb-3">
               Vitaj! Najskôr sa prihlás 🤓
             </div>

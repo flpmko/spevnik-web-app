@@ -3,6 +3,11 @@
   width: 24px;
   content: url("../images/logo192.png");
 }
+.logo-spevnik-big {
+  height: 80px;
+  width: 80px;
+  content: url("../images/logo512.png");
+}
 .logo-ruza {
   content: url("../images/lutherova_ruza.jpg");
 }
