@@ -1,20 +1,21 @@
 {
   "files": {
-    "main.css": "/spevnik-web-app/static/css/main.4fc71729.css",
-    "main.js": "/spevnik-web-app/static/js/main.4ee7dfae.js",
+    "main.css": "/spevnik-web-app/static/css/main.faff411d.css",
+    "main.js": "/spevnik-web-app/static/js/main.87708479.js",
     "static/media/lutherova_ruza.jpg": "/spevnik-web-app/static/media/lutherova_ruza.96c209f8d749c39e374d.jpg",
     "static/media/primeicons.svg": "/spevnik-web-app/static/media/primeicons.c6e2053303524e39530c.svg",
     "static/media/primeicons.eot": "/spevnik-web-app/static/media/primeicons.7fc4d8e224d1ff1b9c62.eot",
     "static/media/primeicons.woff": "/spevnik-web-app/static/media/primeicons.449aa8c65cdc5c2a8686.woff",
     "static/media/primeicons.ttf": "/spevnik-web-app/static/media/primeicons.91bacab1f083f2795272.ttf",
+    "static/media/logo512.png": "/spevnik-web-app/static/media/logo512.854b6bce7506c81df90d.png",
     "static/media/error.png": "/spevnik-web-app/static/media/error.8d9b4134505ab2e61798.png",
     "static/media/logo192.png": "/spevnik-web-app/static/media/logo192.bbb8bfb42c8856d776f8.png",
     "index.html": "/spevnik-web-app/index.html",
-    "main.4fc71729.css.map": "/spevnik-web-app/static/css/main.4fc71729.css.map",
-    "main.4ee7dfae.js.map": "/spevnik-web-app/static/js/main.4ee7dfae.js.map"
+    "main.faff411d.css.map": "/spevnik-web-app/static/css/main.faff411d.css.map",
+    "main.87708479.js.map": "/spevnik-web-app/static/js/main.87708479.js.map"
   },
   "entrypoints": [
-    "static/css/main.4fc71729.css",
-    "static/js/main.4ee7dfae.js"
+    "static/css/main.faff411d.css",
+    "static/js/main.87708479.js"
   ]
 }
