@@ -47,3 +47,35 @@
   justify-content: center;
   gap: 20px;
 }
+.new-song-verse {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.new-song-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+@media screen and (max-width: 768px) {
+  .new-song-line {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    padding-bottom: 20px;
+  }
+  .input-textarea {
+    max-width: 233px
+  }
+  .new-song-container {
+    max-width: fit-content;
+  }
+  .new-song-submit {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 20px;
+    text-align: center;
+  }
+}

@@ -162,6 +162,7 @@ const SongForm = ({ song, resetLocalStorage, reload }) => {
               localStorage.setItem("chords", JSON.stringify(e.value));
             }}
             separator=","
+            style={{ maxWidth: "233px" }}
           />
         </div>
         <div className="new-song-line">
@@ -170,28 +171,33 @@ const SongForm = ({ song, resetLocalStorage, reload }) => {
         {verses.map((item, i) => (
           <div className="new-song-line" key={i}>
             <span>{i + 1}</span>
-            <InputTextarea
-              value={item}
-              placeholder="Text piesne"
-              onChange={(e) => handleInputChange(e, i)}
-              rows={5}
-              cols={30}
-              autoResize
-            />
-            {verses.length !== 1 && (
-              <Button
-                className="new-song-button p-button-danger"
-                icon="pi pi-minus"
-                onClick={() => handleRemoveClick(i)}
-              ></Button>
-            )}
-            {verses.length - 1 === i && (
-              <Button
-                icon="pi pi-plus"
-                className="new-song-button p-button-success"
-                onClick={handleAddClick}
-              ></Button>
-            )}
+            <div className="new-song-verse">
+              <InputTextarea
+                value={item}
+                placeholder="Text piesne"
+                onChange={(e) => handleInputChange(e, i)}
+                rows={5}
+                cols={30}
+                className="input-textarea"
+                autoResize
+              />
+              <div className="new-song-buttons">
+                {verses.length !== 1 && (
+                  <Button
+                    className="new-song-button p-button-danger"
+                    icon="pi pi-minus"
+                    onClick={() => handleRemoveClick(i)}
+                  ></Button>
+                )}
+                {verses.length - 1 === i && (
+                  <Button
+                    icon="pi pi-plus"
+                    className="new-song-button p-button-success"
+                    onClick={handleAddClick}
+                  ></Button>
+                )}
+              </div>
+            </div>
           </div>
         ))}
       </div>

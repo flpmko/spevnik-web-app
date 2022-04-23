@@ -227,20 +227,12 @@ const Songs = () => {
   }, []);
 
   return (
-    <div>
+    <div style={{ overflowX: "hidden" }}>
       <div className="content">
         <div className="container-song-header">
           <h1>Piesne</h1>
         </div>
-        <div
-          className="songs-dropdown"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            paddingBottom: "20px",
-            justifyContent: "space-between",
-          }}
-        >
+        <div className="songs-dropdown">
           <Dropdown
             value={activeCategory}
             options={categories}
@@ -272,9 +264,9 @@ const Songs = () => {
           )}
           <div
             className="songs-list p-card"
-            style={{ backgroundColor: "GrayText", minWidth: "450px" }}
+            style={{ backgroundColor: "GrayText" }}
           >
-            <div>
+            <div className="songs-list-wrapper">
               {isHymn && (
                 <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
                   <span className="p-inputgroup-addon">
@@ -365,6 +357,7 @@ const Songs = () => {
                 totalRecords={totalItems}
                 onPageChange={onPageChange}
                 rowsPerPageOptions={[10, 20, 30]}
+                style={{ gap: "10px" }}
               ></Paginator>
             </div>
           </div>

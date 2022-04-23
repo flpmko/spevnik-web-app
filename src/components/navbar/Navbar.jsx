@@ -10,6 +10,7 @@ import "../../style/icons.css";
 const Navbar = () => {
   const [active, setActive] = useState("nav-links");
   const [burger, setBurger] = useState("burger");
+  const [overflow, setOverflow] = useState(false);
   const { currentUser, logout } = useUserAuth();
   const navigate = useNavigate();
 
@@ -28,10 +29,18 @@ const Navbar = () => {
       ? setActive("nav-links nav-active")
       : setActive("nav-links");
     burger === "burger" ? setBurger("burger toggle") : setBurger("burger");
+    setOverflow(!overflow);
   };
 
   return (
-    <nav className="navbar-top">
+    <nav
+      className="navbar-top"
+      style={
+        overflow
+          ? { overflowX: "visible" }
+          : { overflowX: "hidden", overflowY: "hidden" }
+      }
+    >
       <div className="logo">
         <i className="logo-spevnik"></i>
         <h4>Evanjelický spevník</h4>

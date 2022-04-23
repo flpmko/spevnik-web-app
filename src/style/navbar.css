@@ -13,6 +13,7 @@ nav {
   display: flex;
   align-items: center;
   gap: 1rem;
+  padding-left: 30px;
 }
 .nav-links {
   display: flex;
@@ -43,6 +44,7 @@ nav {
   top: 0;
   z-index: 10;
 }
+
 @media screen and (max-width: 768px) {
   body {
     overflow-x: hidden;
@@ -50,7 +52,7 @@ nav {
   .nav-links {
     position: absolute;
     right: 0;
-    height: 50vh;
+    height: 30vh;
     top: 6vh;
     display: flex;
     flex-direction: column;
@@ -71,6 +73,7 @@ nav {
   }
   .burger {
     display: block;
+    padding-right: 10px;
   }
 }
 
