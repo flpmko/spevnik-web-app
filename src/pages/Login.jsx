@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Checkbox } from "primereact/checkbox";
 import { Message } from "primereact/message";
+import { Toast } from "primereact/toast";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +15,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [checked, setChecked] = useState(false);
+  const toast = useRef();
   const { login } = useUserAuth();
   const navigate = useNavigate();
 
@@ -41,7 +43,6 @@ const Login = () => {
       case "Firebase: Error (auth/internal-error).":
         setError("Chyba prihlasovania!");
         break;
-
       default:
         break;
     }
@@ -58,8 +59,28 @@ const Login = () => {
     );
   };
 
+  const showToast = (severity, summary, message) => {
+    toast.current.show({
+      severity: severity,
+      summary: summary,
+      detail: message,
+      life: 3000,
+    });
+  };
+
+  const forgottenPassword = () => {
+    if (email) {
+      sendPasswordResetEmail(auth, email).then(() =>
+        showToast("success", "Success", "Email odoslaný.")
+      );
+    } else {
+      showToast("error", "Error", "Zadaj email.");
+    }
+  };
+
   return (
     <div style={{ marginTop: "10rem" }}>
+      <Toast ref={toast} />
       <div className="flex align-items-center justify-content-center">
         <div
           className="surface-card p-4 shadow-2 border-round w-full lg:w-6"
@@ -112,7 +133,7 @@ const Login = () => {
               </div>
               <span
                 className="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer"
-                onClick={() => sendPasswordResetEmail(auth, email)}
+                onClick={forgottenPassword}
               >
                 Zabudnuté heslo
               </span>
