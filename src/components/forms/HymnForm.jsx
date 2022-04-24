@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputNumber } from "primereact/inputnumber";
 import { Dropdown } from "primereact/dropdown";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
+import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 import {
   doc,
@@ -35,6 +36,7 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
   const [showMsg, setShowMsg] = useState(false);
   const hymnsRef = doc(db, "index/hymns");
   const timesRef = doc(db, "index/timestamps");
+  const toast = useRef();
 
   const seasons = [
     { name: "Advent", value: "Advent" },
@@ -90,14 +92,18 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
 
   const updateHymn = async () => {
     setLoading(true);
-    await updateDoc(hymnsRef, {
-      all: arrayRemove({
-        title: hymn.title,
-        number: hymn.number,
-        season: hymn.season,
-        verses: hymn.verses,
-      }),
-    });
+    try {
+      await updateDoc(hymnsRef, {
+        all: arrayRemove({
+          title: hymn.title,
+          number: hymn.number,
+          season: hymn.season,
+          verses: hymn.verses,
+        }),
+      });
+    } catch (e) {
+      showToast("error", "Chyba", e);
+    }
     createHymn();
     setLoading(false);
   };
@@ -137,6 +143,15 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
     return text;
   };
 
+  const showToast = (severity, summary, message) => {
+    toast.current.show({
+      severity: severity,
+      summary: summary,
+      detail: message,
+      life: 3000,
+    });
+  };
+
   const resetState = () => {
     setTitle("");
     setNumber();
@@ -158,6 +173,7 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
 
   return (
     <div>
+      <Toast ref={toast} />
       <div className="p-card new-song-container">
         <div className="new-song-line">
           <h2>{hymn ? "Upraviť pieseň" : "Nová pieseň"}</h2>

@@ -23,7 +23,7 @@ const Login = () => {
     try {
       await login(email, password);
       setError("");
-      navigate("/spevnik-web-app/songs");
+      navigate("/spevnik-web-app");
     } catch (err) {
       setError(err.message);
     }
@@ -74,7 +74,7 @@ const Login = () => {
         showToast("success", "Success", "Email odoslaný.")
       );
     } else {
-      showToast("error", "Error", "Zadaj email.");
+      showToast("error", "Chyba", "Zadaj email.");
     }
   };
 

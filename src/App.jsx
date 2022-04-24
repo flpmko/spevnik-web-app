@@ -26,14 +26,13 @@ const App = () => {
         <Navbar />
         <Routes>
           <Route
-            path="/spevnik-web-app/songs"
+            path="/spevnik-web-app/"
             element={
               <PrivateRoute>
                 <Songs />
               </PrivateRoute>
             }
           ></Route>
-          <Route path="/spevnik-web-app/" element={<Login />}></Route>
           <Route path="/spevnik-web-app/login" element={<Login />}></Route>
           <Route path="/*" element={<ErrorPage />}></Route>
         </Routes>

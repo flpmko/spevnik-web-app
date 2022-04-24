@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   getDoc,
   doc,
@@ -12,6 +12,7 @@ import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Paginator } from "primereact/paginator";
 import { confirmDialog } from "primereact/confirmdialog";
+import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 
 import { db } from "../firebase-config";
@@ -45,6 +46,8 @@ const Songs = () => {
   const [orderAscHymns, setOrderAscHymns] = useState(false);
   const [orderAscSongs, setOrderAscSongs] = useState(false);
   const [activeCategory, setActiveCategory] = useState("Spevníkové");
+  const toast = useRef();
+
   const categories = [
     { name: "Spevníkové", value: "Spevníkové" },
     { name: "Mládežnícke", value: "Mládežnícke" },
@@ -208,6 +211,20 @@ const Songs = () => {
     setLoading(false);
   };
 
+  const showToast = (severity, summary, message) => {
+    toast.current.show({
+      severity: severity,
+      summary: summary,
+      detail: message,
+      life: 3000,
+    });
+  };
+
+  const reloadList = () => {
+    reload();
+    showToast("success", "Hotovo", "Zoznam piesní úspešne načítaný.");
+  };
+
   useEffect(() => {
     setLoading(true);
     let category = localStorage.getItem("category");
@@ -228,6 +245,7 @@ const Songs = () => {
 
   return (
     <div style={{ overflowX: "hidden" }}>
+      <Toast ref={toast} />
       <div className="content">
         <div className="container-song-header">
           <h1>Piesne</h1>
@@ -268,52 +286,74 @@ const Songs = () => {
           >
             <div className="songs-list-wrapper">
               {isHymn && (
-                <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
-                  <span className="p-inputgroup-addon">
-                    <i className="pi pi-search" />
-                  </span>
-                  <InputNumber
-                    placeholder="číslo piesne"
-                    value={query}
-                    id="number"
-                    onChange={(e) => {
-                      if (e.value === null) setQuery(undefined);
-                      else setQuery(e.value);
-                    }}
-                  />
+                <div style={{ display: "flex", gap: "20px" }}>
+                  <div
+                    className="p-inputgroup"
+                    style={{ paddingBottom: "20px" }}
+                  >
+                    <span className="p-inputgroup-addon">
+                      <i className="pi pi-search" />
+                    </span>
+                    <InputNumber
+                      placeholder="číslo piesne"
+                      value={query}
+                      id="number"
+                      onChange={(e) => {
+                        if (e.value === null) setQuery(undefined);
+                        else setQuery(e.value);
+                      }}
+                    />
+                    <Button
+                      icon={
+                        orderAscHymns
+                          ? "pi pi-sort-numeric-up"
+                          : "pi pi-sort-numeric-down"
+                      }
+                      className="p-button-primary"
+                      onClick={orderHymns}
+                    />
+                  </div>
                   <Button
-                    icon={
-                      orderAscHymns
-                        ? "pi pi-sort-numeric-up"
-                        : "pi pi-sort-numeric-down"
-                    }
+                    icon={"pi pi-refresh"}
+                    style={{ width: "38px", height: "38px" }}
                     className="p-button-primary"
-                    onClick={orderHymns}
+                    onClick={reloadList}
                   />
                 </div>
               )}
               {!isHymn && (
-                <div className="p-inputgroup" style={{ paddingBottom: "20px" }}>
-                  <span className="p-inputgroup-addon">
-                    <i className="pi pi-search" />
-                  </span>
-                  <InputText
-                    placeholder="názov piesne"
-                    value={query}
-                    id="text"
-                    onChange={(e) => {
-                      if (e.target.value === null) setQuery(undefined);
-                      else setQuery(e.target.value);
-                    }}
-                  />
+                <div style={{ display: "flex", gap: "20px" }}>
+                  <div
+                    className="p-inputgroup"
+                    style={{ paddingBottom: "20px" }}
+                  >
+                    <span className="p-inputgroup-addon">
+                      <i className="pi pi-search" />
+                    </span>
+                    <InputText
+                      placeholder="názov piesne"
+                      value={query}
+                      id="text"
+                      onChange={(e) => {
+                        if (e.target.value === null) setQuery(undefined);
+                        else setQuery(e.target.value);
+                      }}
+                    />
+                    <Button
+                      icon={
+                        orderAscSongs
+                          ? "pi pi-sort-alpha-down"
+                          : "pi pi-sort-alpha-up"
+                      }
+                      className="p-button-primary"
+                      onClick={orderSongs}
+                    />
+                  </div>
                   <Button
-                    icon={
-                      orderAscSongs
-                        ? "pi pi-sort-alpha-down"
-                        : "pi pi-sort-alpha-up"
-                    }
+                    icon={"pi pi-refresh"}
+                    style={{ width: "38px", height: "38px" }}
                     className="p-button-primary"
-                    onClick={orderSongs}
+                    onClick={reloadList}
                   />
                 </div>
               )}
