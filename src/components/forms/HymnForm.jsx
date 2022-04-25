@@ -45,8 +45,8 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
     { name: "Veľká noc", value: "Veľká noc" },
     { name: "Vstúpenie", value: "Vstúpenie" },
     { name: "Zoslanie", value: "Zoslanie" },
-    { name: "Trojjediný", value: "Trojjediný" },
-    { name: "Cirkev", value: "Cirkev" },
+    { name: "Svätá Trojica", value: "Svätá Trojica" },
+    { name: "Bezslávnostná polovica", value: "Bezslávnostná polovica" },
   ];
 
   // handle input change on verses
