@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+<div align="center">
+	<a href="https://www.uniza.sk/index.php/en/" target="_blank">
+		<img src="https://img.shields.io/badge/university-University%20of%20Žilina-2B3A65.svg" alt="university">
+	</a>
+	<a href="https://www.fri.uniza.sk/en/" target="_blank">
+		<img src="https://img.shields.io/badge/faculty-Faculty%20of%20Management%20Science%20and%20Informatics-FECE50.svg" alt="faculty">
+	</a>
+  <a href="https://vzdelavanie.uniza.sk/vzdelavanie/plany.php" target="_blank">
+		<img src="https://img.shields.io/badge/program-Informatics-00a9e0.svg" alt="faculty">
+	</a>
+</div>
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h2 align="center">
+	University of Žilina<br>Faculty of Management Science and Informatics
+</h2>
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# spevnik-web-app
+Moja bakalárska práca, alebo teda časť z nej. Druhá časť je [tu](https://github.com/flpmko/spevnik-mobile-app).
+## Predslov
+Cieľom bakalárskej práce bolo vytvoriť natívnu mobilnú aplikáciu pre platformy iOS a Android, ktorá bude slúžiť ako spevník evanjelických piesní. Súčasťou by tiež mala byť webová aplikácia, ktorá bude slúžiť na správu piesní. Túto tému som si vybral sám, nakoľko som už niekoľko rokov chcel vytvoriť evanjelický spevník pre iOS. Pre Android boli viaceré aplikácie no pre iOS žiadne a tak som sa rozhodol mojou bakalárkou aj trochu prispieť do spoločnosti.
+## O aplikácii
+Ide o webovú aplikáciu, ktorá slúži na správu piesní pre mobilnú aplikáciu Evanjelický spevník. Pomocou tejto aplikácie je možné spravovať databázu piesní a teda do nej piesne pridávať, odoberať a tiež upravovať. To všetko pomocou intuitívneho GUI. Aby sa predišlo voľnému prístupu k dátam piesní, táto aplikácia je zabezpečená a dostupná iba s prihlasovacími údajmi.
+## Technológie
+Aplikácia je vytvorená pomocou frameworku [React JS](https://reactjs.org/) a UI toolkitu [Prime React](https://www.primefaces.org/primereact/).
+## Možnosť zapojiť sa
+Ak by si chcel/a pomôcť so správou piesní pre mobilnú aplikáciu Evanjelický spevník, napíš nám na email [evanjelicky.spevnik@gmail.com](mailto:evanjelicky.spevnik@gmail.com). Správa piesní obnáša pridávanie nových piesní do spevníka a oprava prípadných chýb v texte, ktoré nám používatelia nahlásia.
