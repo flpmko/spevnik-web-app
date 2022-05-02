@@ -112,7 +112,6 @@ const Songs = () => {
   };
 
   const newSongForm = () => {
-    console.log("newsong");
     resetLocalStorage();
     setHymn(null);
     setSong(null);
@@ -146,12 +145,12 @@ const Songs = () => {
     if (orderAscSongs) {
       const myData = []
         .concat(songs)
-        .sort((a, b) => (a.title > b.title ? 1 : -1));
+        .sort((a, b) => a.title.localeCompare(b.title));
       setSongs(myData);
     } else {
       const myData = []
         .concat(songs)
-        .sort((a, b) => (a.title < b.title ? 1 : -1));
+        .sort((a, b) => b.title.localeCompare(a.title));
       setSongs(myData);
     }
     setOrderAscSongs(!orderAscSongs);
@@ -172,7 +171,7 @@ const Songs = () => {
     const data = await getDoc(songsDocRef);
     const songsObject = data
       .get("all")
-      .sort((a, b) => (a.title > b.title ? 1 : -1));
+      .sort((a, b) => a.title.localeCompare(b.title));
     setSongs(songsObject);
   };
 
@@ -270,12 +269,14 @@ const Songs = () => {
           {isHymn ? (
             <HymnForm
               hymn={hymn}
+              hymns={hymns}
               resetLocalStorage={resetLocalStorage}
               reload={reload}
             />
           ) : (
             <SongForm
               song={song}
+              songs={songs}
               resetLocalStorage={resetLocalStorage}
               reload={reload}
             />
@@ -342,8 +343,8 @@ const Songs = () => {
                     <Button
                       icon={
                         orderAscSongs
-                          ? "pi pi-sort-alpha-down"
-                          : "pi pi-sort-alpha-up"
+                          ? "pi pi-sort-alpha-up"
+                          : "pi pi-sort-alpha-down"
                       }
                       className="p-button-primary"
                       onClick={orderSongs}

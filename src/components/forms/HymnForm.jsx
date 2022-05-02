@@ -19,7 +19,7 @@ import { db } from "../../firebase-config";
 
 import "../../style/newSong.css";
 
-const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
+const HymnForm = ({ hymn, hymns, resetLocalStorage, reload }) => {
   // data from local storage
   const oldTitle = localStorage.getItem("title");
   const oldNumber = localStorage.getItem("number");
@@ -74,19 +74,45 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
 
   const createHymn = async () => {
     setLoading(true);
-    await updateDoc(hymnsRef, {
-      all: arrayUnion({
-        title: title,
-        number: number,
-        season: season,
-        verses: verses,
-      }),
-    }).then(reload());
-    await updateDoc(timesRef, {
-      hymns: serverTimestamp(),
-    });
-    resetLocalStorage();
-    resetState();
+    let exists = false;
+    if (!hymn) {
+      hymns.every((el) => {
+        if (el.number === number) {
+          exists = true;
+          showToast(
+            "error",
+            "Chyba",
+            "Pieseň číslo " + number + " už existuje!"
+          );
+          return false;
+        }
+        return true;
+      });
+    }
+    if (!exists) {
+      try {
+        await updateDoc(hymnsRef, {
+          all: arrayUnion({
+            title: title,
+            number: number,
+            season: season,
+            verses: verses,
+          }),
+        }).then(reload());
+        await updateDoc(timesRef, {
+          hymns: serverTimestamp(),
+        });
+        resetLocalStorage();
+        resetState();
+        showToast(
+          "success",
+          "Hotovo",
+          "Pieseň č. " + number + " bola úspešne pridaná do databázy."
+        );
+      } catch (e) {
+        showToast("error", "Chyba", e);
+      }
+    }
     setLoading(false);
   };
 
@@ -101,10 +127,10 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
           verses: hymn.verses,
         }),
       });
+      createHymn();
     } catch (e) {
       showToast("error", "Chyba", e);
     }
-    createHymn();
     setLoading(false);
   };
 
@@ -168,6 +194,7 @@ const HymnForm = ({ hymn, resetLocalStorage, reload }) => {
     } else {
       resetState();
     }
+    setShowMsg(false);
     // eslint-disable-next-line
   }, [hymn]);
 

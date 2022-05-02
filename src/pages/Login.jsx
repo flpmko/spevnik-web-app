@@ -71,7 +71,7 @@ const Login = () => {
   const forgottenPassword = () => {
     if (email) {
       sendPasswordResetEmail(auth, email).then(() =>
-        showToast("success", "Success", "Email odoslaný.")
+        showToast("success", "Hotovo", "Email odoslaný.")
       );
     } else {
       showToast("error", "Chyba", "Zadaj email.");

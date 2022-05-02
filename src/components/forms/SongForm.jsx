@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import { Chips } from "primereact/chips";
 import { Button } from "primereact/button";
 import { Message } from "primereact/message";
+import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 import {
   doc,
@@ -17,7 +18,7 @@ import { db } from "../../firebase-config";
 
 import "../../style/newSong.css";
 
-const SongForm = ({ song, resetLocalStorage, reload }) => {
+const SongForm = ({ song, songs, resetLocalStorage, reload }) => {
   // data from local storage
   const oldTitle = localStorage.getItem("title");
   const oldChords = JSON.parse(localStorage.getItem("chords"));
@@ -32,6 +33,7 @@ const SongForm = ({ song, resetLocalStorage, reload }) => {
   const [showMsg, setShowMsg] = useState(false);
   const songsRef = doc(db, "index/songs");
   const timesRef = doc(db, "index/timestamps");
+  const toast = useRef();
 
   // handle input change on verses
   const handleInputChange = (e, index) => {
@@ -56,33 +58,67 @@ const SongForm = ({ song, resetLocalStorage, reload }) => {
     localStorage.setItem("verses", JSON.stringify(verses));
   };
 
+  const showToast = (severity, summary, message) => {
+    toast.current.show({
+      severity: severity,
+      summary: summary,
+      detail: message,
+      life: 3000,
+    });
+  };
+
   const createSong = async () => {
     setLoading(true);
-    await updateDoc(songsRef, {
-      all: arrayUnion({
-        title: title,
-        chords: chords,
-        verses: verses,
-      }),
-    }).then(reload());
-    await updateDoc(timesRef, {
-      songs: serverTimestamp(),
+    let exists = false;
+    songs.every((el) => {
+      if (el.title === title) {
+        exists = true;
+        showToast("error", "Chyba", "Pieseň " + title + " už existuje!");
+        return false;
+      }
+      return true;
     });
-    resetLocalStorage();
-    resetState();
+    if (!exists) {
+      try {
+        await updateDoc(songsRef, {
+          all: arrayUnion({
+            title: title,
+            chords: chords,
+            verses: verses,
+          }),
+        }).then(reload());
+        await updateDoc(timesRef, {
+          songs: serverTimestamp(),
+        });
+        resetLocalStorage();
+        resetState();
+        showToast(
+          "success",
+          "Hotovo",
+          "Pieseň " + title + " bola úspešne pridaná do databázy."
+        );
+      } catch (e) {
+        showToast("error", "Chyba", e);
+      }
+    }
     setLoading(false);
   };
 
   const updateSong = async () => {
     setLoading(true);
-    await updateDoc(songsRef, {
-      all: arrayRemove({
-        title: song.title,
-        chords: song.chords,
-        verses: song.verses,
-      }),
-    });
-    createSong();
+    try {
+      await updateDoc(songsRef, {
+        all: arrayRemove({
+          title: song.title,
+          chords: song.chords,
+          verses: song.verses,
+        }),
+      });
+      createSong();
+    } catch (e) {
+      showToast("error", "Chyba", e);
+    }
+
     setLoading(false);
   };
 
@@ -135,6 +171,7 @@ const SongForm = ({ song, resetLocalStorage, reload }) => {
 
   return (
     <div>
+      <Toast ref={toast} />
       <div className="p-card new-song-container">
         <div className="new-song-line">
           <h2>{song ? "Upraviť pieseň" : "Nová pieseň"}</h2>
