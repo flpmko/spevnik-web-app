@@ -15,12 +15,21 @@
 </h2>
 
 # spevnik-web-app
+
 Moja bakalárska práca, alebo teda časť z nej. Druhá časť je [tu](https://github.com/flpmko/spevnik-mobile-app).
+
 ## Predslov
+
 Cieľom bakalárskej práce bolo vytvoriť natívnu mobilnú aplikáciu pre platformy iOS a Android, ktorá bude slúžiť ako spevník evanjelických piesní. Súčasťou by tiež mala byť webová aplikácia, ktorá bude slúžiť na správu piesní. Túto tému som si vybral sám, nakoľko som už niekoľko rokov chcel vytvoriť evanjelický spevník pre iOS. Pre Android boli viaceré aplikácie no pre iOS žiadna a tak som sa rozhodol mojou bakalárkou aj trochu prispieť do spoločnosti.
+
 ## O aplikácii
+
 Ide o webovú aplikáciu, ktorá slúži na správu piesní pre mobilnú aplikáciu **Evanjelický spevník**. Pomocou tejto aplikácie je možné spravovať databázu piesní a teda do nej piesne pridávať, odoberať a tiež upravovať. To všetko pomocou intuitívneho GUI. Aby sa predišlo voľnému prístupu k dátam piesní, táto aplikácia je zabezpečená a dostupná iba s prihlasovacími údajmi.
+
 ## Technológie
-Aplikácia je vytvorená pomocou frameworku [React JS](https://reactjs.org/), UI toolkitu [Prime React](https://www.primefaces.org/primereact/) a komunikuje s[Firebase](https://firebase.google.com/) službami.
+
+Aplikácia je vytvorená pomocou frameworku [React JS](https://reactjs.org/), UI toolkitu [Prime React](https://www.primefaces.org/primereact/) a komunikuje s [Firebase](https://firebase.google.com/) službami.
+
 ## Možnosť zapojiť sa
+
 Ak by si chcel/a pomôcť so správou piesní pre mobilnú aplikáciu **Evanjelický spevník**, napíš nám na email [evanjelicky.spevnik@gmail.com](mailto:evanjelicky.spevnik@gmail.com). Správa piesní obnáša pridávanie nových piesní do spevníka a oprava prípadných chýb v texte, ktoré nám používatelia nahlásia.

@@ -75,6 +75,7 @@ const Songs = () => {
           title: hymnPar.title,
           number: hymnPar.number,
           season: hymnPar.season,
+          verses: hymnPar.verses,
         }),
       });
       await updateDoc(timesRef, {
@@ -373,7 +374,7 @@ const Songs = () => {
                       hymn={hymnItem}
                       loading={loading}
                       setHymn={setHymn}
-                      confirm={confirm}
+                      confirm={() => confirm(hymnItem)}
                     />
                   );
                 })}
@@ -386,7 +387,7 @@ const Songs = () => {
                       song={songItem}
                       loading={loading}
                       setSong={setSong}
-                      confirm={confirm}
+                      confirm={() => confirm(songItem)}
                     />
                   );
                 })}
